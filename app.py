@@ -923,16 +923,26 @@ elif page=="🔧 Data Pipeline & Quality":
     c1,c2,c3,c4=st.columns(4)
     c1.metric("KS Statistic",str(sd["ks_stat"]))
     c2.metric("KS p-value",str(sd["ks_p"]),
-              "✅ Distributions match (p>0.05)" if sd["ks_p"]>0.05 else "⚠️ Distributions differ")
+    "✅ Distributions match (p>0.05)" if sd["ks_p"]>0.05 else "⚠️ Distributions differ")
     c3.metric("Real σ%/day",f"{sd['sigma_real%']:.4f}%")
     c4.metric("Synthetic σ%/day",f"{sd['sigma_syn%']:.4f}%")
-
-    dist_df=pd.DataFrame({
+  
+              dist_df=pd.DataFrame({
         "Daily Return (%)": np.concatenate([sd["real_ret"]*100, sd["syn_ret"]*100]),
         "Series": (["Real Returns"]*len(sd["real_ret"])) + (["Synthetic Returns"]*len(sd["syn_ret"])),
     })
     # Keep Plotly Express constructor args and dark-theme layout args separate
     # to avoid TypeError from passing layout keys directly into px.histogram.
+    fig_syn=px.histogram(
+        dist_df,
+        x="Daily Return (%)",
+        color="Series",
+        nbins=60,
+        barmode="overlay",
+        histnorm="probability density",
+        opacity=0.65,
+        color_discrete_map={"Real Returns":"#58a6ff","Synthetic Returns":"#f6ad55"},
+    )
     fig_syn=px.histogram(
         dist_df,
         x="Daily Return (%)",
