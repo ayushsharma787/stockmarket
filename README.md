@@ -27,6 +27,10 @@
 
 ## Run
 ```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
 ## Troubleshooting: `TypeError` from `px.histogram(..., **PLOT_DARK)`
 
 If you see a Streamlit red error box around a line like:
@@ -55,6 +59,4 @@ fig.update_layout(**PLOT_DARK)
 ```
 
 This separates **data/trace arguments** (for `px.histogram`) from **layout/theme arguments**
-(`update_layout`) and avoids the `TypeError`.pip install -r requirements.txt
-streamlit run app.py
-```
+(`update_layout`) and avoids the `TypeError`. 
