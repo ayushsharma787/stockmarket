@@ -1635,7 +1635,7 @@ elif page=="🔬 Deep Drill-Down":
             ibox("Quarterly RSI","Q-RSI < 30 marks major market bottoms — once-in-a-cycle opportunity. "
                  "Q-RSI > 80 = multi-year overbought. Puts current price in 10-20 year context.")
 
-    dfl_dd=(frames_long or frames).get(dd_t) or frames.get(dd_t)
+dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
     if dfl_dd is not None and len(dfl_dd)>500:
         st.subheader("Full Yearly Return History")
         yr_s=_yearly_returns(dfl_dd)
