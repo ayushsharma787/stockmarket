@@ -27,6 +27,34 @@
 
 ## Run
 ```bash
-pip install -r requirements.txt
+## Troubleshooting: `TypeError` from `px.histogram(..., **PLOT_DARK)`
+
+If you see a Streamlit red error box around a line like:
+
+```python
+fig = px.histogram(..., **PLOT_DARK)
+```
+
+the issue is usually that `PLOT_DARK` contains **layout keys** (for example `paper_bgcolor`,
+`plot_bgcolor`, `font`, `legend`) that are not valid constructor arguments for `plotly.express`.
+
+### Fix
+
+Create the figure with `px.histogram` first, then apply layout styling with `update_layout`:
+
+```python
+fig = px.histogram(
+    fdf,
+    x="Age",
+    color="Edu Label",
+    nbins=20,
+    barmode="stack",
+    color_discrete_sequence=["#3B82F6", "#D4A853", "#00D4AA"],
+)
+fig.update_layout(**PLOT_DARK)
+```
+
+This separates **data/trace arguments** (for `px.histogram`) from **layout/theme arguments**
+(`update_layout`) and avoids the `TypeError`.pip install -r requirements.txt
 streamlit run app.py
 ```
