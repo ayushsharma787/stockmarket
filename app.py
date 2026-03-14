@@ -1187,7 +1187,7 @@ elif page=="⏱️ Multi-Timeframe Analysis":
             st.plotly_chart(fig_sr,use_container_width=True,config=PCFG)
             c1s,c2s=st.columns(2)
             with c1s:
-                st.markdown("**🟢 Support Levels**")x
+                st.markdown("**🟢 Support Levels**")
                 for i,s in enumerate(supps):
                     dist=(cur_px-s)/cur_px*100
                     st.write(f"S{i+1}: **${s:.2f}** ({dist:+.1f}% from current)")
