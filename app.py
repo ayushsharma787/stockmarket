@@ -923,15 +923,22 @@ elif page=="🔧 Data Pipeline & Quality":
     c3.metric("Real σ%/day",f"{sd['sigma_real%']:.4f}%")
     c4.metric("Synthetic σ%/day",f"{sd['sigma_syn%']:.4f}%")
 
-    fig_syn=go.Figure()
-    bins=np.linspace(min(sd["real_ret"].min(),sd["syn_ret"].min()),
-                      max(sd["real_ret"].max(),sd["syn_ret"].max()),60)*100
-    fig_syn.add_trace(go.Histogram(x=sd["real_ret"]*100,name="Real Returns",
-                                    xbins=dict(start=float(bins[0]),end=float(bins[-1]),size=float(bins[1]-bins[0])),
-                                    marker_color="#58a6ff",opacity=0.7,histnorm="probability density"))
-    fig_syn.add_trace(go.Histogram(x=sd["syn_ret"]*100,name="Synthetic Returns",
-                                    xbins=dict(start=float(bins[0]),end=float(bins[-1]),size=float(bins[1]-bins[0])),
-                                    marker_color="#f6ad55",opacity=0.6,histnorm="probability density"))
+    dist_df=pd.DataFrame({
+        "Daily Return (%)": np.concatenate([sd["real_ret"]*100, sd["syn_ret"]*100]),
+        "Series": (["Real Returns"]*len(sd["real_ret"])) + (["Synthetic Returns"]*len(sd["syn_ret"])),
+    })
+    # Keep Plotly Express constructor args and dark-theme layout args separate
+    # to avoid TypeError from passing layout keys directly into px.histogram.
+    fig_syn=px.histogram(
+        dist_df,
+        x="Daily Return (%)",
+        color="Series",
+        nbins=60,
+        barmode="overlay",
+        histnorm="probability density",
+        opacity=0.65,
+        color_discrete_map={"Real Returns":"#58a6ff","Synthetic Returns":"#f6ad55"},
+    )
     pplot(fig_syn,h=300,xaxis_title="Daily Return (%)",yaxis_title="Probability Density",
           barmode="overlay")
     ibox("Synthetic Data Validation — KS Test",
