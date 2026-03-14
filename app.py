@@ -743,15 +743,10 @@ if page=="📊 Executive Overview":
         d1=(float(df["Close"].iloc[-1])-float(df["Close"].iloc[-2])) if len(df)>1 else 0
         hi=float(df["Close"].rolling(252).max().iloc[-1]); lo=float(df["Close"].rolling(252).min().iloc[-1])
         sig=score_stock(ind_data[t],None)
-            x_dt=pd.Timestamp(yr)
-            # Avoid Plotly add_vline(annotation_*) datetime bug by adding shape + annotation explicitly.
-            fig.add_shape(type="line",xref="x",yref="paper",x0=x_dt,x1=x_dt,y0=0,y1=1,
-                          line=dict(color=col,width=1,dash="dot"))
-            fig.add_annotation(x=x_dt,y=1.02,xref="x",yref="paper",text=lbl,showarrow=False,
-                               font=dict(color=col,size=10))
-            st.metric(t,f"${cur:.2f}",f"{d1:+.2f} | 5Y: {ret5:+.1f}%")
-            st.progress(max(0,min(1,(cur-lo)/(hi-lo+1e-9))),text=f"52W: ${lo:.0f}–${hi:.0f}")
-            st.caption(f"{sig_col.get(sig['signal'],'')}{sig['signal']} | Sharpe:{sig['sharpe']}")
+          st.metric(t,f"${cur:.2f}",f"{d1:+.2f} | 5Y: {ret5:+.1f}%")
+        st.progress(max(0,min(1,(cur-lo)/(hi-lo+1e-9))),text=f"52W: ${lo:.0f}–${hi:.0f}")
+        st.caption(f"{sig_col.get(sig['signal'],'')}{sig['signal']} | Sharpe:{sig['sharpe']}")
+
 
     st.divider()
     c1,c2=st.columns(2)
@@ -926,8 +921,8 @@ elif page=="🔧 Data Pipeline & Quality":
     "✅ Distributions match (p>0.05)" if sd["ks_p"]>0.05 else "⚠️ Distributions differ")
     c3.metric("Real σ%/day",f"{sd['sigma_real%']:.4f}%")
     c4.metric("Synthetic σ%/day",f"{sd['sigma_syn%']:.4f}%")
-  
-              dist_df=pd.DataFrame({
+   
+    dist_df=pd.DataFrame({
         "Daily Return (%)": np.concatenate([sd["real_ret"]*100, sd["syn_ret"]*100]),
         "Series": (["Real Returns"]*len(sd["real_ret"])) + (["Synthetic Returns"]*len(sd["syn_ret"])),
     })
