@@ -1637,7 +1637,7 @@ elif page=="🔬 Deep Drill-Down":
 
 dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
             if dfl_dd is not None and len(dfl_dd) > 500:
-            st.subheader("Full Yearly Return History")
+                st.subheader("Full Yearly Return History")
     dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
     
     if dfl_dd is not None and len(dfl_dd) > 500:
@@ -1664,7 +1664,6 @@ dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
              "High variance with huge up-years and big down-years = volatile compounder (NVDA, TSLA). "
              "The average annual return combined with the positive year % gives you the "
              "expected value of holding this stock over any given year.")
-
     st.subheader("Return Distribution vs Normal")
     rp=ret_*100; mu=float(rp.mean()); sg=float(rp.std())
     xn=np.linspace(float(rp.min()),float(rp.max()),200)
