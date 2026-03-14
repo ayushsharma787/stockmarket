@@ -1636,11 +1636,11 @@ elif page=="🔬 Deep Drill-Down":
                  "Q-RSI > 80 = multi-year overbought. Puts current price in 10-20 year context.")
 
 dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
-            if dfl_dd is not None and len(dfl_dd) > 500:
+              if dfl_dd is not None and len(dfl_dd) > 500:
                 st.subheader("Full Yearly Return History")
     dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
     
-    if dfl_dd is not None and len(dfl_dd) > 500:
+      if dfl_dd is not None and len(dfl_dd) > 500:
         yr_s = _yearly_returns(dfl_dd)
         fig_yr = go.Figure(go.Bar(
             x=yr_s.index.astype(str), y=yr_s.values,
