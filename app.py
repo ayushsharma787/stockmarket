@@ -743,8 +743,12 @@ if page=="📊 Executive Overview":
         d1=(float(df["Close"].iloc[-1])-float(df["Close"].iloc[-2])) if len(df)>1 else 0
         hi=float(df["Close"].rolling(252).max().iloc[-1]); lo=float(df["Close"].rolling(252).min().iloc[-1])
         sig=score_stock(ind_data[t],None)
-        sig_col={"BUY":"🟢","HOLD":"🟡","AVOID":"🔴"}
-        with cols[i]:
+            x_dt=pd.Timestamp(yr)
+            # Avoid Plotly add_vline(annotation_*) datetime bug by adding shape + annotation explicitly.
+            fig.add_shape(type="line",xref="x",yref="paper",x0=x_dt,x1=x_dt,y0=0,y1=1,
+                          line=dict(color=col,width=1,dash="dot"))
+            fig.add_annotation(x=x_dt,y=1.02,xref="x",yref="paper",text=lbl,showarrow=False,
+                               font=dict(color=col,size=10))
             st.metric(t,f"${cur:.2f}",f"{d1:+.2f} | 5Y: {ret5:+.1f}%")
             st.progress(max(0,min(1,(cur-lo)/(hi-lo+1e-9))),text=f"52W: ${lo:.0f}–${hi:.0f}")
             st.caption(f"{sig_col.get(sig['signal'],'')}{sig['signal']} | Sharpe:{sig['sharpe']}")
