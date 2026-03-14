@@ -1187,7 +1187,7 @@ elif page=="⏱️ Multi-Timeframe Analysis":
             st.plotly_chart(fig_sr,use_container_width=True,config=PCFG)
             c1s,c2s=st.columns(2)
             with c1s:
-                st.markdown("**🟢 Support Levels**")
+                st.markdown("**🟢 Support Levels**")x
                 for i,s in enumerate(supps):
                     dist=(cur_px-s)/cur_px*100
                     st.write(f"S{i+1}: **${s:.2f}** ({dist:+.1f}% from current)")
@@ -1637,23 +1637,33 @@ elif page=="🔬 Deep Drill-Down":
 
 dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
         if dfl_dd is not None and len(dfl_dd) > 500:
-        st.subheader("Full Yearly Return History")
-        yr_s=_yearly_returns(dfl_dd)
-        fig_yr=go.Figure(go.Bar(x=yr_s.index.astype(str),y=yr_s.values,
-                                 marker_color=["#3fb950" if v>=0 else "#f85149" for v in yr_s.values],
-                                 text=[f"{v:.1f}%" for v in yr_s.values],textposition="outside"))
-        pplot(fig_yr,h=280,yaxis_title="Annual Return (%)",xaxis_title="Year",
-              yaxis={"range":[float(yr_s.min())-10,float(yr_s.max())+10]})
-        best_yr=yr_s.idxmax(); worst_yr=yr_s.idxmin()
-        avg_r=yr_s.mean(); pos_yrs=(yr_s>0).sum()
-        c1y,c2y,c3y,c4y=st.columns(4)
-        c1y.metric("Best Year",f"{best_yr} ({yr_s[best_yr]:+.1f}%)")
-        c2y.metric("Worst Year",f"{worst_yr} ({yr_s[worst_yr]:+.1f}%)")
-        c3y.metric("Avg Annual",f"{avg_r:+.1f}%")
-        c4y.metric("Positive Years",f"{pos_yrs}/{len(yr_s)} ({pos_yrs/len(yr_s)*100:.0f}%)")
-        ibox("Yearly return character","High win rate (>70% positive years) = reliable compounder. "
-             "High variance with huge up and down years = volatile compounder. "
-             "Avg annual return × win rate = expected value of holding for any given year.")
+            st.subheader("Full Yearly Return History")
+    dfl_dd = frames_long.get(dd_t, frames.get(dd_t))
+    
+    if dfl_dd is not None and len(dfl_dd) > 500:
+        yr_s = _yearly_returns(dfl_dd)
+        fig_yr = go.Figure(go.Bar(
+            x=yr_s.index.astype(str), y=yr_s.values,
+            marker_color=["#3fb950" if v >= 0 else "#f85149" for v in yr_s.values],
+            text=[f"{v:.1f}%" for v in yr_s.values], textposition="outside",
+        ))
+        pplot(fig_yr, h=300, yaxis_title="Annual Return (%)",
+              xaxis_title="Year", yaxis=dict(range=[yr_s.min()-10, yr_s.max()+10]))
+        best_yr  = yr_s.idxmax()
+        worst_yr = yr_s.idxmin()
+        avg_ret  = yr_s.mean()
+        pos_yrs  = (yr_s > 0).sum()
+        col1y, col2y, col3y, col4y = st.columns(4)
+        col1y.metric("Best Year",  f"{best_yr} ({yr_s[best_yr]:+.1f}%)")
+        col2y.metric("Worst Year", f"{worst_yr} ({yr_s[worst_yr]:+.1f}%)")
+        col3y.metric("Avg Annual", f"{avg_ret:+.1f}%")
+        col4y.metric("Positive Years", f"{pos_yrs}/{len(yr_s)} ({pos_yrs/len(yr_s)*100:.0f}%)")
+        ibox("Yearly return history decoded",
+             "This is the single most useful long-term chart for understanding a stock's character. "
+             "High win rate (>70% positive years) = reliable compounder (MSFT, AAPL, JPM). "
+             "High variance with huge up-years and big down-years = volatile compounder (NVDA, TSLA). "
+             "The average annual return combined with the positive year % gives you the "
+             "expected value of holding this stock over any given year.")
 
     st.subheader("Return Distribution vs Normal")
     rp=ret_*100; mu=float(rp.mean()); sg=float(rp.std())
