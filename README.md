@@ -1,28 +1,32 @@
-# 🏗️ Kwality Construction — Financial Dashboard
+# IB Stock Analytics Dashboard v6 — LSTM + Multi-Timeframe
 
-Forensic bank statement analysis for M/S. Kwality Construction Company  
-FY 2024-25 · HDFC Bank A/c 27718630000017 · Mussoorie Branch
+## New in v6
+- Extended history from 1993 for long-term charts (Yahoo Finance)
+- **Multi-Timeframe Analysis page** with 7 sub-tabs:
+  - Weekly candlestick + EMA 10/20/50 + RSI/MACD/Stochastic
+  - Monthly candlestick + EMA 6/12/24 + RSI/MACD/ADX
+  - Quarterly candlestick + EMA 4/8/12 + RSI
+  - Monthly Return Calendar Heatmap (Year × Month)
+  - Yearly Returns bar chart + heatmap (all 10 stocks)
+  - Support & Resistance (pivot-based, Daily/Weekly/Monthly)
+  - Cross-Timeframe Signal Table (Weekly/Monthly/Quarterly aligned)
+- Deep Drill-Down enhanced with monthly/quarterly long-term charts
+- Full yearly return history in Deep Drill-Down
 
-## Files
-```
-main.py            → Streamlit dashboard (run this)
-bank_data.py       → All extracted & categorized transaction data
-requirements.txt   → Python dependencies
-README.md          → This file
-```
+## Data
+| Source | Period | Use |
+|--------|--------|-----|
+| Yahoo Finance (daily) | 2015 → today | LSTM training, daily TA |
+| Yahoo Finance (extended) | 1993 → today | MTF charts, long-term context |
+
+## LSTM
+- Single-layer LSTM hidden=48, seq_len=20
+- Trained via BPTT + Adam, 10 epochs, gradient clipping
+- RobustScaler on train-only (zero leakage)
+- Ensemble: LSTM hidden states → HistGradientBoosting
 
 ## Run
 ```bash
 pip install -r requirements.txt
-streamlit run main.py
+streamlit run app.py
 ```
-Opens at http://localhost:8501
-
-## 4 Dashboard Tabs
-
-| Tab | What's in it |
-|-----|-------------|
-| 📊 Expense Deep Dive | Donut + bar charts for 10 categories, vendor drill-down, CA insights |
-| 📈 Cash Flow & Revenue | Monthly inflows/outflows, net surplus/deficit, balance trend, revenue sources |
-| 🔴 Suspicious Transactions | 8 flagged entities, severity ratings, Noorkhan pattern analysis |
-| 🚀 Loss → Profit Roadmap | Waterfall profit bridge, savings donut, 17 recommendations, 90-day plan |
