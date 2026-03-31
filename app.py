@@ -24,6 +24,7 @@ Data Period: 2021-01-01 → 2026-03-14 (~1,310 trading days × 10 tickers)
 import streamlit as st
 import pandas as pd
 import numpy as np
+import importlib.util
 import os, warnings, io
 from datetime import datetime
 warnings.filterwarnings("ignore")
@@ -37,6 +38,27 @@ st.markdown(
     "<style>section[data-testid='stSidebar']{background-color:#161b22}</style>",
     unsafe_allow_html=True,
 )
+
+# Runtime dependency preflight (friendly error instead of ModuleNotFoundError)
+REQUIRED_MODULES = {
+    "plotly": "plotly",
+    "yfinance": "yfinance",
+    "sklearn": "scikit-learn",
+    "scipy": "scipy",
+    "openpyxl": "openpyxl",
+}
+missing_modules = [
+    f"{mod} (pip package: {pkg})"
+    for mod, pkg in REQUIRED_MODULES.items()
+    if importlib.util.find_spec(mod) is None
+]
+if missing_modules:
+    st.error(
+        "❌ Missing required Python package(s): "
+        + ", ".join(missing_modules)
+        + ".\n\nInstall all app dependencies with:\n`pip install -r requirements.txt`"
+    )
+    st.stop()
 
 # ── CONSTANTS ──────────────────────────────────────────────────────────────
 TICKERS = ["AAPL","MSFT","NVDA","AMZN","GOOGL","META","TSLA","BRK-B","JPM","UNH"]
@@ -743,7 +765,7 @@ if page=="📊 Executive Overview":
         d1=(float(df["Close"].iloc[-1])-float(df["Close"].iloc[-2])) if len(df)>1 else 0
         hi=float(df["Close"].rolling(252).max().iloc[-1]); lo=float(df["Close"].rolling(252).min().iloc[-1])
         sig=score_stock(ind_data[t],None)
-          st.metric(t,f"${cur:.2f}",f"{d1:+.2f} | 5Y: {ret5:+.1f}%")
+        st.metric(t,f"${cur:.2f}",f"{d1:+.2f} | 5Y: {ret5:+.1f}%")
         st.progress(max(0,min(1,(cur-lo)/(hi-lo+1e-9))),text=f"52W: ${lo:.0f}–${hi:.0f}")
         st.caption(f"{sig_col.get(sig['signal'],'')}{sig['signal']} | Sharpe:{sig['sharpe']}")
 
